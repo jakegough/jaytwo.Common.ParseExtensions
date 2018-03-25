@@ -31,7 +31,12 @@ node('linux && docker') {
     }
     finally {
         stage("Cleanup") {
-            sh "make docker-cleanup"
+            // remove old images
+            // see: http://stackoverflow.com/questions/32723111/how-to-remove-old-and-unused-docker-images
+            sh 'docker rmi $(docker images --filter "dangling=true" -q --no-trunc)'
+            sh 'docker rmi $(docker images | grep "none" | awk \'/ / { print $3 }\')'
+            
+            // clean workspace
             cleanWs()
         }        
     }
