@@ -1,0 +1,46 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.16
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "jaytwo.Common.ParseExtensions", "src\jaytwo.Common.ParseExtensions\jaytwo.Common.ParseExtensions.csproj", "{0AEAAE78-0604-4C32-B61D-278D0426CAEF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "jaytwo.Common.ParseExtensions.UnitTests", "test\jaytwo.Common.ParseExtensions.UnitTests\jaytwo.Common.ParseExtensions.UnitTests.csproj", "{50CD6766-013B-4509-AD97-8C0E3CF83015}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{6C5EEB9A-74B4-4291-8A11-76A9EAC30F1E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{1A09A17E-4225-48FC-86F7-1AC5BF46B3F7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FF25D2F0-91AE-4934-A685-6424BE643C3B}"
+	ProjectSection(SolutionItems) = preProject
+		Dockerfile = Dockerfile
+		Makefile = Makefile
+		README.md = README.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0AEAAE78-0604-4C32-B61D-278D0426CAEF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0AEAAE78-0604-4C32-B61D-278D0426CAEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0AEAAE78-0604-4C32-B61D-278D0426CAEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0AEAAE78-0604-4C32-B61D-278D0426CAEF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{50CD6766-013B-4509-AD97-8C0E3CF83015}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50CD6766-013B-4509-AD97-8C0E3CF83015}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50CD6766-013B-4509-AD97-8C0E3CF83015}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50CD6766-013B-4509-AD97-8C0E3CF83015}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{0AEAAE78-0604-4C32-B61D-278D0426CAEF} = {6C5EEB9A-74B4-4291-8A11-76A9EAC30F1E}
+		{50CD6766-013B-4509-AD97-8C0E3CF83015} = {1A09A17E-4225-48FC-86F7-1AC5BF46B3F7}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9BFDB2BF-A56E-42E4-8CF5-8DBF66F4B8AC}
+	EndGlobalSection
+EndGlobal
