@@ -10,7 +10,7 @@ node('linux && docker') {
             checkout scm
         }
         stage('Set In Progress') {
-            updateBuildStatusInProgress(github_username, github_repository, jenkins_credential_id_bitbucket);
+            updateBuildStatusInProgress(github_username, github_repository, jenkins_credential_id_github);
         }
         stage ('Build') {
             sh "make docker-build"
@@ -22,11 +22,11 @@ node('linux && docker') {
             sh "make docker-pack"
         }
         stage('Set Success') {
-            updateBuildStatusSuccessful(github_username, github_repository, jenkins_credential_id_bitbucket);
+            updateBuildStatusSuccessful(github_username, github_repository, jenkins_credential_id_github);
         }
     }
     catch(Exception e) {
-        updateBuildStatusFailed(github_username, github_repository, jenkins_credential_id_bitbucket);
+        updateBuildStatusFailed(github_username, github_repository, jenkins_credential_id_github);
         throw e
     }
     finally {
