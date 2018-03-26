@@ -19,7 +19,7 @@ node('linux && make && docker') {
             sh "make docker-test DOCKER_TAG_SUFFIX=-${BUILD_TIMESTAMP}"
         }
         
-        if (BRANCH_NAME == "develop" {
+        if (BRANCH_NAME == "develop") {
           stage ('Pack-Beta') {
             sh "make docker-pack-beta DOCKER_TAG_SUFFIX=-${BUILD_TIMESTAMP}"
           }
