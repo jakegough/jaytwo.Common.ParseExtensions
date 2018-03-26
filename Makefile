@@ -21,21 +21,30 @@ pack: build
 	cd ./src/jaytwo.Common.ParseExtensions & \
     dotnet pack -o ../../out ${PACK_ARG}
 
+publish:
+	cd ./out & \
+    dotnet pack -o ../../out ${PACK_ARG}
+
 pack-beta: PACK_ARG=--version-suffix beta-$(shell date +'%Y%m%d%H%M%S')
 pack-beta: pack
 
+DOCKER_TAG_PREFIX?=jaytwocommonparseextensions
+DOCKER_TAG?=${DOCKER_TAG_PREFIX}${DOCKER_TAG_SUFFIX}
 docker-build: clean
-	docker build -t foobar . --target builder
+	docker build -t ${DOCKER_TAG} . --target builder
 
 docker-test: docker-build
-	docker run --rm foobar make test
+	docker run --rm ${DOCKER_TAG} make test
 
 DOCKER_PACK_MAKE_TARGETS?=pack
 docker-pack: docker-build
-	docker run --rm -v $(shell pwd)/out:/src/out foobar make ${DOCKER_PACK_MAKE_TARGETS}
+	docker run --rm -v $(shell pwd)/out:/src/out ${DOCKER_TAG} make ${DOCKER_PACK_MAKE_TARGETS}
 
 docker-pack-beta: DOCKER_PACK_MAKE_TARGETS=pack-beta
 docker-pack-beta: docker-pack
 
+docker-publish: docker-build
+	docker run --rm ${DOCKER_TAG} make publish
+  
 docker-cleanup:
-	docker rmi foobar
+	docker rmi ${DOCKER_TAG} || echo "docker tag ${DOCKER_TAG} not found"

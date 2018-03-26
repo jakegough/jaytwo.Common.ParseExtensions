@@ -4,7 +4,7 @@ def jenkins_credential_id_github = 'github-personal-access-token-jakegough'
 def dockerhub_username = 'jakegough'
 def jenkins_credential_id_dockerhub = 'userpass-dockerhub-jakegough'
 
-node('linux && docker') {
+node('linux && make && docker') {
     try {
         stage('Clone') {
             checkout scm
@@ -13,13 +13,24 @@ node('linux && docker') {
             updateBuildStatusInProgress(github_username, github_repository, jenkins_credential_id_github);
         }
         stage ('Build') {
-            sh "make docker-build"
+            sh "make docker-build DOCKER_TAG_SUFFIX=-${BUILD_TIMESTAMP}"
         }
         stage ('Test') {
-            sh "make docker-test"
+            sh "make docker-test DOCKER_TAG_SUFFIX=-${BUILD_TIMESTAMP}"
         }
-        stage ('Pack') {
-            sh "make docker-pack"
+        
+        if (BRANCH_NAME == "develop" {
+          stage ('Pack-Beta') {
+            sh "make docker-pack-beta DOCKER_TAG_SUFFIX=-${BUILD_TIMESTAMP}"
+          }
+        }
+        else {
+          stage ('Pack') {
+            sh "make docker-pack DOCKER_TAG_SUFFIX=-${BUILD_TIMESTAMP}"
+          }
+        }
+        stage ('Docker Cleanup') {
+            sh "make docker-cleanup DOCKER_TAG_SUFFIX=-${BUILD_TIMESTAMP}"
         }
         stage('Set Success') {
             updateBuildStatusSuccessful(github_username, github_repository, jenkins_credential_id_github);
@@ -30,12 +41,7 @@ node('linux && docker') {
         throw e
     }
     finally {
-        stage("Cleanup") {
-            // remove old images
-            // see: http://stackoverflow.com/questions/32723111/how-to-remove-old-and-unused-docker-images
-            // sh 'docker rmi $(docker images --filter "dangling=true" -q --no-trunc)'
-            // sh 'docker rmi $(docker images | grep "none" | awk \'/ / { print $3 }\')'
-            
+        stage("Cleanup") {            
             // clean workspace
             cleanWs()
         }        
