@@ -13,24 +13,31 @@ node('linux && make && docker') {
         stage('Set In Progress') {
             updateBuildStatusInProgress(github_username, github_repository, jenkins_credential_id_github);
         }
-        stage ('Build') {
-            sh "make docker-build DOCKER_TAG_SUFFIX=-${GIT_COMMIT}"
+        
+        timestamp = sh(returnStdout: true, script: "date +'%Y%m%d%H%M%S'").toString().trim()
+        
+        try {
+            stage ('Build') {
+                sh "make docker-build DOCKER_TAG_SUFFIX=-${timestamp}"
+            }
+            stage ('Test') {
+                sh "make docker-test DOCKER_TAG_SUFFIX=-${timestamp}"
+            }
+            if (BRANCH_NAME == "develop") {
+              stage ('Pack-Beta') {
+                sh "make docker-pack-beta DOCKER_TAG_SUFFIX=-${timestamp}"
+              }
+            }
+            else {
+              stage ('Pack') {
+                sh "make docker-pack DOCKER_TAG_SUFFIX=-${timestamp}"
+              }
+            }
         }
-        stage ('Test') {
-            sh "make docker-test DOCKER_TAG_SUFFIX=-${GIT_COMMIT}"
-        }
-        if (BRANCH_NAME == "develop") {
-          stage ('Pack-Beta') {
-            sh "make docker-pack-beta DOCKER_TAG_SUFFIX=-${GIT_COMMIT}"
-          }
-        }
-        else {
-          stage ('Pack') {
-            sh "make docker-pack DOCKER_TAG_SUFFIX=-${GIT_COMMIT}"
-          }
-        }
-        stage ('Docker Cleanup') {
-            sh "make docker-cleanup DOCKER_TAG_SUFFIX=-${GIT_COMMIT}"
+        finally {
+            stage ('Docker Cleanup') {
+                sh "make docker-cleanup DOCKER_TAG_SUFFIX=-${timestamp}"
+            }
         }
         stage('Set Success') {
             updateBuildStatusSuccessful(github_username, github_repository, jenkins_credential_id_github);
