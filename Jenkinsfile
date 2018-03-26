@@ -3,6 +3,7 @@ def github_repository = 'jaytwo.Common.ParseExtensions'
 def jenkins_credential_id_github = 'github-personal-access-token-jakegough'
 def dockerhub_username = 'jakegough'
 def jenkins_credential_id_dockerhub = 'userpass-dockerhub-jakegough'
+// BUILD_TIMESTAMP requires plugin: https://wiki.jenkins.io/display/JENKINS/Build+Timestamp+Plugin
 
 node('linux && make && docker') {
     try {
@@ -13,24 +14,23 @@ node('linux && make && docker') {
             updateBuildStatusInProgress(github_username, github_repository, jenkins_credential_id_github);
         }
         stage ('Build') {
-            sh "make docker-build DOCKER_TAG_SUFFIX=-${BUILD_TIMESTAMP}"
+            sh "make docker-build DOCKER_TAG_SUFFIX=-${GIT_COMMIT}"
         }
         stage ('Test') {
-            sh "make docker-test DOCKER_TAG_SUFFIX=-${BUILD_TIMESTAMP}"
+            sh "make docker-test DOCKER_TAG_SUFFIX=-${GIT_COMMIT}"
         }
-        
         if (BRANCH_NAME == "develop") {
           stage ('Pack-Beta') {
-            sh "make docker-pack-beta DOCKER_TAG_SUFFIX=-${BUILD_TIMESTAMP}"
+            sh "make docker-pack-beta DOCKER_TAG_SUFFIX=-${GIT_COMMIT}"
           }
         }
         else {
           stage ('Pack') {
-            sh "make docker-pack DOCKER_TAG_SUFFIX=-${BUILD_TIMESTAMP}"
+            sh "make docker-pack DOCKER_TAG_SUFFIX=-${GIT_COMMIT}"
           }
         }
         stage ('Docker Cleanup') {
-            sh "make docker-cleanup DOCKER_TAG_SUFFIX=-${BUILD_TIMESTAMP}"
+            sh "make docker-cleanup DOCKER_TAG_SUFFIX=-${GIT_COMMIT}"
         }
         stage('Set Success') {
             updateBuildStatusSuccessful(github_username, github_repository, jenkins_credential_id_github);
@@ -41,10 +41,9 @@ node('linux && make && docker') {
         throw e
     }
     finally {
-        stage("Cleanup") {            
-            // clean workspace
-            cleanWs()
-        }        
+        // not wrapped in a stage because it throws off stage history when cleanup happens because of a failed stage
+        // clean workspace
+        cleanWs()     
     }
 }
 
